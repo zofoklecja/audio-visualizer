@@ -7,8 +7,8 @@ function App() {
 	const { stream, err } = useMicrophone();
 	const [active, setActive] = useState(true);
 
-	function toggleInactive() {
-		return setActive(false);
+	function toggleActive() {
+		return setActive((prev) => !prev);
 	}
 
 	return (
@@ -19,7 +19,7 @@ function App() {
 			) : (
 				<div>
 					<Visualizer stream={stream} active={active} />
-					<Controls onPauseClick={toggleInactive} />
+					<Controls onClick={toggleActive} active={active} />
 				</div>
 			)}
 		</div>

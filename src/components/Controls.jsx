@@ -1,7 +1,7 @@
-function Controls({ onPauseClick }) {
+function Controls({ onClick, active }) {
 	return (
 		<div>
-			<button onClick={onPauseClick}>⏸ Pause</button>
+			<button onClick={onClick}>{active ? "⏸ Pause" : "▶ Resume"}</button>
 		</div>
 	);
 }

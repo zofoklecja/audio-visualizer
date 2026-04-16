@@ -6,9 +6,11 @@ const HEIGHT = 400;
 function Visualizer({ stream, active }) {
 	const canvasRef = useRef(null);
 	const activeRef = useRef(true);
+	const drawRef = useRef(null);
 
 	useEffect(() => {
 		activeRef.current = active;
+		if (active && drawRef.current) drawRef.current();
 	}, [active]);
 
 	useEffect(() => {
@@ -52,6 +54,7 @@ function Visualizer({ stream, active }) {
 				x += barWidth + 1;
 			}
 		}
+		drawRef.current = draw;
 
 		draw();
 
