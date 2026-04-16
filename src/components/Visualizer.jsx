@@ -3,8 +3,13 @@ import { useEffect, useRef } from "react";
 const WIDTH = 600;
 const HEIGHT = 400;
 
-function Visualizer({ stream }) {
+function Visualizer({ stream, active }) {
 	const canvasRef = useRef(null);
+	const activeRef = useRef(true);
+
+	useEffect(() => {
+		activeRef.current = active;
+	}, [active]);
 
 	useEffect(() => {
 		if (!stream) return;
@@ -24,6 +29,10 @@ function Visualizer({ stream }) {
 		canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
 		let drawVisual;
 		function draw() {
+			if (!activeRef.current) {
+				cancelAnimationFrame(drawVisual);
+				return;
+			}
 			drawVisual = requestAnimationFrame(draw);
 
 			analyser.getByteFrequencyData(dataArray);
