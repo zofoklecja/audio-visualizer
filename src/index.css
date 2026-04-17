@@ -108,7 +108,14 @@ button:active {
 	background-color: var(--border);
 }
 
+.visualizer__wrapper {
+	width: 100%;
+	max-width: 600px;
+}
+
 canvas {
-	border: 1px solid var(--border);
+	width: 100%;
+	height: auto;
 	background-color: black;
+	border: 1px solid var(--border);
 }
