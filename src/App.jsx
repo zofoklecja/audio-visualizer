@@ -12,17 +12,17 @@ function App() {
 	}
 
 	return (
-		<div>
+		<main>
 			<h1>Audio Visualizer</h1>
 			{err ? (
 				<p>Access denied</p>
 			) : (
-				<div>
+				<>
 					<Visualizer stream={stream} active={active} />
 					<Controls onClick={toggleActive} active={active} />
-				</div>
+				</>
 			)}
-		</div>
+		</main>
 	);
 }
 

@@ -10,7 +10,7 @@
 	--heading: system-ui, "Segoe UI", Roboto, sans-serif;
 	--mono: "Syne Mono", monospace;
 
-	font: 18px/145% var(--mono);
+	font: 18px var(--mono);
 	letter-spacing: 0.18px;
 	color-scheme: light dark;
 	color: var(--text);
@@ -43,9 +43,16 @@ body {
 	margin: 0 auto;
 	text-align: center;
 	min-height: 100svh;
+}
+
+main {
 	display: flex;
+	align-items: center;
 	flex-direction: column;
-	box-sizing: border-box;
+	gap: 16px;
+	margin: 24px 0;
+	justify-content: center;
+	min-height: 100svh;
 }
 
 h1,
@@ -58,11 +65,9 @@ h2 {
 h1 {
 	font-size: 56px;
 	letter-spacing: -1.68px;
-	margin: 32px 0;
 
 	@media (max-width: 1024px) {
 		font-size: 36px;
-		margin: 20px 0;
 	}
 }
 

@@ -1,3 +1,7 @@
+* {
+	box-sizing: border-box;
+}
+
 button {
 	appearance: none;
 	border-radius: 0;
@@ -9,4 +13,10 @@ button {
 	border: none;
 	color: inherit;
 	font: inherit;
+}
+
+h1,
+h2,
+h3 {
+	margin: 0;
 }
