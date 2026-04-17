@@ -6,13 +6,10 @@
 	--border: #3e334c;
 	--bg: #fff8ee;
 
-	--sans: system-ui, "Segoe UI", Roboto, sans-serif;
-	--heading: system-ui, "Segoe UI", Roboto, sans-serif;
 	--mono: "Syne Mono", monospace;
 
 	font: 18px var(--mono);
 	letter-spacing: 0.18px;
-	color-scheme: light dark;
 	color: var(--text);
 	background: var(--bg);
 	font-synthesis: none;
@@ -39,8 +36,6 @@ body {
 }
 
 #root {
-	max-width: 100%;
-	margin: 0 auto;
 	text-align: center;
 	min-height: 100svh;
 }
@@ -57,8 +52,6 @@ main {
 
 h1,
 h2 {
-	font-family: var(--mono);
-	font-weight: 500;
 	color: var(--text-h);
 }
 
