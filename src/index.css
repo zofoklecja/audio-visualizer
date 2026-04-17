@@ -102,3 +102,8 @@ button:active {
 	color: color-mix(in srgb, var(--bg), transparent 30%);
 	background-color: var(--border);
 }
+
+canvas {
+	border: 1px solid var(--border);
+	background-color: black;
+}
