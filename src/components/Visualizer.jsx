@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 
-const DEFAULT_WIDTH = 600;
-const DEFAULT_HEIGHT = 400;
+const ASPECT_RATIO = 2 / 3;
 
 function Visualizer({ stream, active }) {
 	const canvasRef = useRef(null);
@@ -15,7 +14,7 @@ function Visualizer({ stream, active }) {
 			for (const entry of entries) {
 				const w = entry.contentBoxSize[0].inlineSize;
 				canvasRef.current.width = w;
-				canvasRef.current.height = (w * DEFAULT_HEIGHT) / DEFAULT_WIDTH;
+				canvasRef.current.height = w * ASPECT_RATIO;
 			}
 		});
 
@@ -92,11 +91,7 @@ function Visualizer({ stream, active }) {
 
 	return (
 		<div ref={wrapperRef} className="visualizer__wrapper">
-			<canvas
-				ref={canvasRef}
-				width={DEFAULT_WIDTH}
-				height={DEFAULT_HEIGHT}
-			/>
+			<canvas ref={canvasRef} />
 		</div>
 	);
 }
