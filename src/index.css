@@ -37,7 +37,6 @@ body {
 
 #root {
 	text-align: center;
-	min-height: 100svh;
 }
 
 main {
@@ -47,7 +46,6 @@ main {
 	gap: 16px;
 	margin: 24px 0;
 	justify-content: center;
-	min-height: 100svh;
 }
 
 h1,
