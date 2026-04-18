@@ -7,9 +7,9 @@ function App() {
 	const { stream, err } = useMicrophone();
 	const [active, setActive] = useState(true);
 
-	function toggleActive() {
-		return setActive((prev) => !prev);
-	}
+	const toggleActive = () => {
+		setActive((prev) => !prev);
+	};
 
 	return (
 		<main>

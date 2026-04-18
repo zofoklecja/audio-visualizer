@@ -14,7 +14,11 @@ function Visualizer({ stream, active }: Props) {
 	const drawRef = useRef<(() => void) | null>(null);
 
 	useEffect(() => {
-		if (!wrapperRef?.current) return;
+		const wrapper = wrapperRef.current;
+		if (!wrapper) {
+			return;
+		}
+
 		const resizeObserver = new ResizeObserver((entries) => {
 			for (const entry of entries) {
 				const w = entry.contentBoxSize[0].inlineSize;
@@ -25,39 +29,47 @@ function Visualizer({ stream, active }: Props) {
 			}
 		});
 
-		resizeObserver.observe(wrapperRef.current);
+		resizeObserver.observe(wrapper);
 
 		return () => {
-			if (wrapperRef?.current) {
-				resizeObserver.unobserve(wrapperRef.current);
+			if (wrapper) {
+				resizeObserver.unobserve(wrapper);
 			}
 		};
 	}, []);
 
 	useEffect(() => {
 		activeRef.current = active;
-		if (active && drawRef.current) drawRef.current();
+		if (active && drawRef.current) {
+			drawRef.current();
+		}
 	}, [active]);
 
 	useEffect(() => {
-		if (!stream || !canvasRef.current) return;
+		if (!stream || !canvasRef.current) {
+			return;
+		}
 		const canvas = canvasRef.current;
 		const canvasCtx = canvas.getContext("2d");
+		if (!canvasCtx) {
+			return;
+		}
+
 		const audioCtx = new AudioContext();
 		const analyser = audioCtx.createAnalyser();
 		analyser.minDecibels = -90;
 		analyser.maxDecibels = -10;
 		analyser.fftSize = 32;
+
 		const bufferLength = analyser.frequencyBinCount;
+		const dataArray = new Uint8Array(bufferLength);
 
 		const source = audioCtx.createMediaStreamSource(stream);
 		source.connect(analyser);
 
-		const dataArray = new Uint8Array(bufferLength);
-
-		canvasCtx?.clearRect(0, 0, canvas.width, canvas.height);
-		let drawRequestId: number;
-		function draw() {
+		canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+		let drawRequestId: number = 0;
+		const draw = () => {
 			if (!activeRef.current || !canvasCtx) {
 				cancelAnimationFrame(drawRequestId);
 				return;
@@ -71,26 +83,27 @@ function Visualizer({ stream, active }: Props) {
 			canvasCtx.fillRect(0, 0, width, height);
 
 			const barWidth = (width - bufferLength) / bufferLength;
-			let barHeight;
 			let x = 0;
 			for (let i = 0; i < bufferLength; i++) {
-				barHeight = dataArray[i];
+				const barHeight = dataArray[i];
 
 				canvasCtx.fillStyle = "rgb(255, 189, 9)";
 				canvasCtx.fillRect(x, height - barHeight, barWidth, barHeight);
 
 				x += barWidth + 1;
 			}
-		}
+		};
 		drawRef.current = draw;
 
 		draw();
 
 		return () => {
 			cancelAnimationFrame(drawRequestId);
-			audioCtx.close();
+			audioCtx.close().catch((err) => {
+				console.error(err);
+			});
 		};
-	}, [stream, canvasRef]);
+	}, [stream]);
 
 	return (
 		<div ref={wrapperRef} className="visualizer__wrapper">

@@ -5,26 +5,29 @@ function useMicrophone(): { stream: MediaStream | null; err: Error | null } {
 	const [err, setErr] = useState<Error | null>(null);
 	const streamRef = useRef<MediaStream | null>(null);
 
-	const getStream = async () => {
-		try {
-			const s = await navigator.mediaDevices.getUserMedia({
-				audio: true,
-			});
-			streamRef.current = s;
-			setStream(s);
-		} catch (err) {
-			if (err instanceof Error) {
-				setErr(err);
-			}
-		}
-	};
-
 	useEffect(() => {
+		const getStream = async () => {
+			try {
+				const mediaStream = await navigator.mediaDevices.getUserMedia({
+					audio: true,
+				});
+				streamRef.current = mediaStream;
+				setStream(mediaStream);
+			} catch (err) {
+				if (err instanceof Error) {
+					setErr(err);
+				} else {
+					setErr(new Error("Unknown error"));
+				}
+			}
+		};
 		getStream();
 
 		return () => {
 			if (streamRef.current) {
-				streamRef.current.getTracks().forEach((track) => track.stop());
+				streamRef.current.getTracks().forEach((track) => {
+					track.stop();
+				});
 			}
 		};
 	}, []);
