@@ -2,19 +2,26 @@ import { useEffect, useRef } from "react";
 
 const ASPECT_RATIO = 2 / 3;
 
-function Visualizer({ stream, active }) {
-	const canvasRef = useRef(null);
-	const wrapperRef = useRef(null);
-	const activeRef = useRef(true);
-	const drawRef = useRef(null);
+type Props = {
+	stream: MediaStream | null;
+	active: boolean;
+};
+
+function Visualizer({ stream, active }: Props) {
+	const canvasRef = useRef<HTMLCanvasElement>(null);
+	const wrapperRef = useRef<HTMLDivElement>(null);
+	const activeRef = useRef<boolean>(true);
+	const drawRef = useRef<(() => void) | null>(null);
 
 	useEffect(() => {
 		if (!wrapperRef?.current) return;
 		const resizeObserver = new ResizeObserver((entries) => {
 			for (const entry of entries) {
 				const w = entry.contentBoxSize[0].inlineSize;
-				canvasRef.current.width = w;
-				canvasRef.current.height = w * ASPECT_RATIO;
+				if (canvasRef.current) {
+					canvasRef.current.width = w;
+					canvasRef.current.height = w * ASPECT_RATIO;
+				}
 			}
 		});
 
@@ -33,8 +40,9 @@ function Visualizer({ stream, active }) {
 	}, [active]);
 
 	useEffect(() => {
-		if (!stream) return;
-		const canvasCtx = canvasRef.current.getContext("2d");
+		if (!stream || !canvasRef.current) return;
+		const canvas = canvasRef.current;
+		const canvasCtx = canvas.getContext("2d");
 		const audioCtx = new AudioContext();
 		const analyser = audioCtx.createAnalyser();
 		analyser.minDecibels = -90;
@@ -47,23 +55,18 @@ function Visualizer({ stream, active }) {
 
 		const dataArray = new Uint8Array(bufferLength);
 
-		canvasCtx.clearRect(
-			0,
-			0,
-			canvasRef.current.width,
-			canvasRef.current.height,
-		);
-		let drawVisual;
+		canvasCtx?.clearRect(0, 0, canvas.width, canvas.height);
+		let drawRequestId: number;
 		function draw() {
-			if (!activeRef.current) {
-				cancelAnimationFrame(drawVisual);
+			if (!activeRef.current || !canvasCtx) {
+				cancelAnimationFrame(drawRequestId);
 				return;
 			}
-			drawVisual = requestAnimationFrame(draw);
+			drawRequestId = requestAnimationFrame(draw);
 
 			analyser.getByteFrequencyData(dataArray);
 
-			const { width, height } = canvasRef.current;
+			const { width, height } = canvas;
 			canvasCtx.fillStyle = "rgba(0, 0, 0, 0.5)";
 			canvasCtx.fillRect(0, 0, width, height);
 
@@ -84,10 +87,10 @@ function Visualizer({ stream, active }) {
 		draw();
 
 		return () => {
-			cancelAnimationFrame(drawVisual);
+			cancelAnimationFrame(drawRequestId);
 			audioCtx.close();
 		};
-	}, [stream]);
+	}, [stream, canvasRef]);
 
 	return (
 		<div ref={wrapperRef} className="visualizer__wrapper">
